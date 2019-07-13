@@ -13,10 +13,10 @@ const SIG_IDENTIFIER = 'sig';
 const walletPath = path.join(process.cwd(), 'wallet');
 const wallet = new FileSystemWallet(walletPath);
 
-const cert = fs.readFileSync(path.join(walletPath, 'User1@org1.example.com/User1@org1.example.com-cert.pem')).toString();
-const key = fs.readFileSync(path.join(walletPath, 'User1@org1.example.com/67c1373bd5ce985b724bddeba67feba261f17432d488ffbbf18134b8e8669d85_sk')).toString();
+const cert = fs.readFileSync(path.join(walletPath, 'Admin1@org1.example.com/Admin@org1.example.com-cert.pem')).toString();
+const key = fs.readFileSync(path.join(walletPath, 'Admin1@org1.example.com/7c9c6fa13c15e06ba15dd685ea96b53e02c4f70c809830bc023309b6328144dd_sk')).toString();
 
-const identityLabel = 'User1@org1.example.com';
+const identityLabel = 'Admin@org1.example.com';
 const identity = X509WalletMixin.createIdentity('Org1MSP', cert, key);
 
 const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'connection-org1.json');
@@ -52,7 +52,7 @@ async function submitTransaction(request) {
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccpPath, { wallet, identity: 'User1@org1.example.com', discovery: { enabled: true, asLocalhost: false} });
+        await gateway.connect(ccpPath, { wallet, identity: 'Admin@org1.example.com', discovery: { enabled: true, asLocalhost: false} });
 
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('scka-channel');
