@@ -19,7 +19,7 @@ const key = fs.readFileSync(path.join(walletPath, 'User1@org1.example.com/67c137
 const identityLabel = 'User1@org1.example.com';
 const identity = X509WalletMixin.createIdentity('Org1MSP', cert, key);
 
-const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'ConnectionOrg1.json');
+const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'connection-org1.json');
 
 /*
 *** Setting up express app to handle json data
@@ -33,7 +33,7 @@ app.use(express.json());
 *** Start server and listen for JSON requests in order to parse and forward them accordingly
 */
 app.post('/', function (request, response) {
-    console.log("New Measurement received: %s", request.body);
+    console.log("New Measurement received: %s %s", request.body[MSG_IDENTIFIER], request.body[SIG_IDENTIFIER]);
 
     submitTransaction(request);
     
@@ -52,13 +52,15 @@ async function submitTransaction(request) {
 
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccpPath, { wallet, identity: 'User1@org1.example.com' });
+        await gateway.connect(ccpPath, { wallet, identity: 'User1@org1.example.com', discovery: { enabled: true, asLocalhost: false} });
 
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('scka-channel');
 
         // Get the contract from the network.
         const contract = network.getContract('mycc');
+        
+        console.log("Try to submit transaction...");
 
         // Submit the specified transaction.
         await contract.submitTransaction('registerMeasurement', request.body[MSG_IDENTIFIER], request.body[SIG_IDENTIFIER]);
