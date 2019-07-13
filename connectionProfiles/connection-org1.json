@@ -6,7 +6,7 @@
         "connection": {
             "timeout": {
                 "peer": {
-                    "endorser": "300"
+                    "endorser": "1000"
                 }
             }
         }
@@ -19,11 +19,25 @@
                 "peer1.org1.example.com"
             ]
         },
-	"Org2": {
+	      "Org2": {
             "mspid": "Org2MSP",
             "peers": [
                 "peer0.org2.example.com",
                 "peer1.org2.example.com"
+            ]
+        },
+        "OrdererOrg1": {
+            "mspid": "OrdererOrg1MSP",
+            "peers": [
+                "orderer0.ordererOrg1.example.com",
+                "orderer1.ordererOrg1.example.com"
+            ]
+        },
+        "OrdererOrg2": {
+            "mspid": "OrdererOrg2MSP",
+            "peers": [
+                "orderer0.ordererOrg2.example.com",
+                "orderer1.ordererOrg2.example.com"
             ]
         }
     },
@@ -45,6 +59,62 @@
             "grpcOptions": {
                 "ssl-target-name-override": "peer1.org1.example.com"
             }
+        },
+        "peer0.org2.example.com": {
+            "url": "grpcs://peer0.org2.example.com:7051",
+            "tlsCACerts": {
+                "path": "crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.org2.example.com"
+            }
+        },
+        "peer1.org1.example.com": {
+            "url": "grpcs://peer1.org1.example.com:8051",
+            "tlsCACerts": {
+                "path": "crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.org2.example.com"
+            }
         }
+    },
+    "orderers": {
+      "orderer0.ordererOrg1.example.com": {
+        "url": "grpcs://orderer0.ordererOrg1.example.com:7051",
+        "tlsCACerts": {
+            "path": "crypto-config/ordererOrganizations/ordererOrg1.example.com/tlsca/tlsca.ordererOrg1.example.com-cert.pem"
+        },
+        "grpcOptions": {
+            "ssl-target-name-override": "orderer0.ordererOrg1.example.com"
+        }
+      },
+      "orderer1.ordererOrg1.example.com": {
+        "url": "grpcs://orderer1.ordererOrg1.example.com:7051",
+        "tlsCACerts": {
+            "path": "crypto-config/ordererOrganizations/ordererOrg1.example.com/tlsca/tlsca.ordererOrg1.example.com-cert.pem"
+        },
+        "grpcOptions": {
+            "ssl-target-name-override": "orderer1.ordererOrg1.example.com"
+        }
+      },
+      "orderer0.ordererOrg2.example.com": {
+        "url": "grpcs://orderer0.ordererOrg2.example.com:7051",
+        "tlsCACerts": {
+            "path": "crypto-config/ordererOrganizations/ordererOrg2.example.com/tlsca/tlsca.ordererOrg2.example.com-cert.pem"
+        },
+        "grpcOptions": {
+            "ssl-target-name-override": "orderer0.ordererOrg2.example.com"
+        }
+      },
+      "orderer0.ordererOrg1.example.com": {
+        "url": "grpcs://orderer1.ordererOrg2.example.com:7051",
+        "tlsCACerts": {
+            "path": "crypto-config/ordererOrganizations/ordererOrg2.example.com/tlsca/tlsca.ordererOrg2.example.com-cert.pem"
+        },
+        "grpcOptions": {
+            "ssl-target-name-override": "orderer1.ordererOrg2.example.com"
+        }
+      }
     }
 }
