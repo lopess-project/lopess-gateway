@@ -1,14 +1,20 @@
 {
     "name": "net-org1",
     "version": "1.0.0",
-    "client": {
-        "organization": "Org1",
-        "connection": {
-            "timeout": {
-                "peer": {
-                    "endorser": "1000"
-                }
-            }
+    "channels": {
+        "scka-channel": {
+            "orderers":  [
+                "orderer0.ordererOrg1.example.com",
+                "orderer1.ordererOrg1.example.com",
+                "orderer0.ordererOrg2.example.com",
+                "orderer1.ordererOrg2.example.com"
+            ],
+            "peers": [
+                "peer0.org1.example.com",
+                "peer1.org1.example.com",
+                "peer0.org2.example.com",
+                "peer1.org2.example.com"
+            ]
         }
     },
     "organizations": {
@@ -28,14 +34,14 @@
         },
         "OrdererOrg1": {
             "mspid": "OrdererOrg1MSP",
-            "peers": [
+            "orderers": [
                 "orderer0.ordererOrg1.example.com",
                 "orderer1.ordererOrg1.example.com"
             ]
         },
         "OrdererOrg2": {
             "mspid": "OrdererOrg2MSP",
-            "peers": [
+            "orderers": [
                 "orderer0.ordererOrg2.example.com",
                 "orderer1.ordererOrg2.example.com"
             ]
