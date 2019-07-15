@@ -86,7 +86,7 @@ async function submitTransaction(request) {
     try {
         // Timestamp when transaction arrived at gateway
         var time = moment();
-        var time_format = time.format('YYYY-MM-DD HH:mm:ss Z');
+        var time_format = time.format('YYYY-MM-DD HH:mm:ssZ');
         console.log("Timestamp is: %s", time_format)
 
         await wallet.import(identityLabel, identity);
