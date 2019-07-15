@@ -26,6 +26,7 @@ const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'connection-org2.j
 */
 var express = require('express');
 var app = express();
+var moment = require('moment');
 
 app.use(express.json());
 
@@ -83,6 +84,10 @@ async function queryLedger(request) {
 
 async function submitTransaction(request) {
     try {
+        // Timestamp when transaction arrived at gateway
+        var time = moment();
+        var time_format = time.format('YYYY-MM-DD HH:mm:ss Z');
+
         await wallet.import(identityLabel, identity);
 
         // Create a new gateway for connecting to our peer node.
@@ -98,7 +103,7 @@ async function submitTransaction(request) {
         console.log("Try to submit transaction...");
 
         // Submit the specified transaction.
-        await contract.submitTransaction('registerMeasurement', request.body[MSG_IDENTIFIER], request.body[SIG_IDENTIFIER]);
+        await contract.submitTransaction('registerMeasurement', request.body[MSG_IDENTIFIER], request.body[SIG_IDENTIFIER], time_format);
         console.log('Transaction has been submitted');
 
         // Disconnect from the gateway.
