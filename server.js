@@ -19,7 +19,7 @@ const key = fs.readFileSync(path.join(walletPath, 'Admin1@org1.example.com/7c9c6
 const identityLabel = 'admin';
 const identity = X509WalletMixin.createIdentity('Org1MSP', cert, key);
 
-const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'connection-org1.json');
+const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'connection-org2.json');
 
 /*
 *** Setting up express app to handle json data
@@ -36,15 +36,50 @@ app.post('/', function (request, response) {
     console.log("New Measurement received: %s %s", request.body[MSG_IDENTIFIER], request.body[SIG_IDENTIFIER]);
 
     submitTransaction(request);
-    
+
     response.sendStatus(200); // echo the result back
 });
 
-app.listen(3000, '0.0.0.0', function() {  
+app.get('/', function (request, response) {
+    var recordSet = queryLedger;
+    response.render("view/index.html", JSON.stringify(recordSet));
+});
+
+app.listen(3000, '0.0.0.0', function() {
     console.log('Server started. Listening on port 3000.');
     console.log('Wallet Path is: %s', walletPath);
     console.log('CCP Path is: %s', ccpPath);
 });
+
+async function queryLedger(request) {
+    try {
+        await wallet.import(identityLabel, identity);
+
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccpPath, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: false}, eventHandlerOptions: { commitTimeout: 500 }, clientTlsIdentity: 'Admin@org1.example.com' });
+
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('scka-channel');
+
+        // Get the contract from the network.
+        const contract = network.getContract('mycc');
+
+        console.log("Try to query ledger...");
+
+        // Submit the specified transaction.
+        var payload = contract.createTransaction('getMeasurementRecords').submit();
+        console.log('Ledger has been queried. Results forwarded...');
+
+        // Disconnect from the gateway.
+        await gateway.disconnect();
+        return payload;
+
+    } catch (error) {
+        console.error(`Failed to query ledger: ${error}`);
+        return "Failed to query ledger. See log for more info"
+    }
+}
 
 async function submitTransaction(request) {
     try {
@@ -59,7 +94,7 @@ async function submitTransaction(request) {
 
         // Get the contract from the network.
         const contract = network.getContract('mycc');
-        
+
         console.log("Try to submit transaction...");
 
         // Submit the specified transaction.
