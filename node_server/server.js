@@ -42,7 +42,7 @@ app.post('/', function (request, response) {
 });
 
 app.get('/', function (request, response) {
-    var recordSet = queryLedger;
+    var recordSet = queryLedger(request);
     response.render("view/index.html", JSON.stringify(recordSet));
 });
 
