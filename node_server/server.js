@@ -17,7 +17,7 @@ const wallet = new FileSystemWallet(walletPath);
 const ccpPath = path.resolve(__dirname, 'connectionProfiles', 'connection.json');
 const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
 const ccp = JSON.parse(ccpJSON);
-const caInfo = ccp.certificateAuthorities['ca.org1.example.com'];
+const caInfo = ccp.certificateAuthorities['ca.org2.example.com'];
 const caTLSCACertsPath = path.resolve(__dirname, 'connectionProfiles', caInfo.tlsCACerts.path);
 const caTLSCACerts = fs.readFileSync(caTLSCACertsPath);
 const ca = new FabricCAServices(caInfo.url, { trustedRoots: caTLSCACerts, verify: false }, caInfo.caName);
@@ -51,7 +51,6 @@ app.post('/', function (request, response) {
 
 app.get('/', async function (request, response) {
     var result = await queryLedger(request);
-    console.log(result);
     var records = {
 	title: "Measurement Records",
 	recordSet: result
@@ -72,7 +71,7 @@ async function enrollAndRegisterUser() {
     if (!adminExists) {
         // Enroll the admin user, and import the new identity into the wallet.
         const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'adminpw' });
-        const identity = X509WalletMixin.createIdentity('Org1MSP', enrollment.certificate, enrollment.key.toBytes());
+        const identity = X509WalletMixin.createIdentity('Org2MSP', enrollment.certificate, enrollment.key.toBytes());
         await wallet.import('admin', identity);
         console.log('Successfully enrolled admin user "admin" and imported it into the wallet');
     }
@@ -87,9 +86,9 @@ async function enrollAndRegisterUser() {
 	const adminIdentity = gateway.getCurrentIdentity();
 
         // Register the user, enroll the user, and import the new identity into the wallet.
-        const secret = await ca.register({ affiliation: 'org1.department1', enrollmentID: 'user1', role: 'client' }, adminIdentity);
+        const secret = await ca.register({ affiliation: 'org2.department1', enrollmentID: 'user1', role: 'client' }, adminIdentity);
         const enrollment = await ca.enroll({ enrollmentID: 'user1', enrollmentSecret: secret });
-        const userIdentity = X509WalletMixin.createIdentity('Org1MSP', enrollment.certificate, enrollment.key.toBytes());
+        const userIdentity = X509WalletMixin.createIdentity('Org2MSP', enrollment.certificate, enrollment.key.toBytes());
         await wallet.import('user1', userIdentity);
         console.log('Successfully registered and enrolled admin user "user1" and imported it into the wallet');
     }

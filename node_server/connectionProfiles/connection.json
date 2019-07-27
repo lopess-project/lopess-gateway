@@ -1,8 +1,8 @@
 {
-    "name": "net-org1",
+    "name": "net-org2",
     "version": "1.0.0",
     "client": {
-        "organization": "Org1",
+        "organization": "Org2",
         "connection": {
             "timeout": {
                 "peer": {
@@ -27,6 +27,9 @@
             "peers": [
                 "peer0.org2.example.com",
                 "peer1.org2.example.com"
+            ],
+	    "certificateAuthorities": [
+                "ca.org2.example.com"
             ]
         }
     },
@@ -70,10 +73,20 @@
     },
     "certificateAuthorities": {
         "ca.org1.example.com": {
-            "url": "https://ca.org1.example.com:7054",
+            "url": "https://ca.org2.example.com:7054",
             "caName": "ca.org1.example.com",
             "tlsCACerts": {
                 "path": "crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        },
+	"ca.org2.example.com": {
+            "url": "https://ca.org2.example.com:8054",
+            "caName": "ca.org2.example.com",
+            "tlsCACerts": {
+                "path": "crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem"
             },
             "httpOptions": {
                 "verify": false
