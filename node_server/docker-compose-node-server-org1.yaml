@@ -7,7 +7,7 @@ networks:
 
 services:
   node_server_org2:
-    hostname: nodeServer.org2.example.com
+    hostname: nodeServer.org1.example.com
     image: hlf/node-server:latest
     working_dir: /usr/src/app
     environment:
@@ -34,10 +34,10 @@ services:
           condition: on-failure
       placement:
             constraints:
-              - node.hostname == hlf-server-2
+              - node.hostname == hlf-server1
     networks:
       net:
         aliases:
-          - nodeServer.org2.example.com
+          - nodeServer.org1.example.com
     ports:
-      - 4000:3000
+      - 3000:3000
