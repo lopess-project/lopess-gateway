@@ -1,0 +1,43 @@
+version: '3.4'
+
+networks:
+    net:
+      external:
+        name: net
+
+services:
+  node_server_org2:
+    hostname: nodeServer.org2.example.com
+    image: hlf/node-server:latest
+    working_dir: /usr/src/app
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net
+      - DISCOVERY_AS_LOCALHOST=false
+      - CORE_O1_ENDPOINT=10.0.0.5
+      - CORE_O2_ENDPOINT=10.0.0.7
+      - CORE_O3_ENDPOINT=10.0.0.9
+      - CORE_O4_ENDPOINT=10.0.0.12
+    depends_on:
+      - orderer0.ordererOrg1.example.com
+      - orderer1.ordererOrg1.example.com
+      - orderer0.ordererOrg2.example.com
+      - orderer1.ordererOrg2.example.com
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+      - peer0.org2.example.com
+      - peer1.org2.example.com
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+          condition: on-failure
+      placement:
+            constraints:
+              - node.hostname == hlf-server-2
+    networks:
+      net:
+        aliases:
+          - nodeServer.org2.example.com
+    ports:
+      - 4000:3000
